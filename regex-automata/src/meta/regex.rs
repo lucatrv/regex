@@ -159,10 +159,10 @@ type CachePoolFn =
 ///
 /// # Example: anchored search
 ///
-/// This example shows how use [`Input::anchored`] to run an anchored search,
-/// even when the regex pattern itself isn't anchored. An anchored search
-/// guarantees that if a match is found, then the start offset of the match
-/// corresponds to the offset at which the search was started.
+/// This example shows how to use [`Input::anchored`] to run an anchored
+/// search, even when the regex pattern itself isn't anchored. An anchored
+/// search guarantees that if a match is found, then the start offset of the
+/// match corresponds to the offset at which the search was started.
 ///
 /// ```
 /// use regex_automata::{meta::Regex, Anchored, Input, Match};
@@ -732,9 +732,9 @@ impl Regex {
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
     ///
-    /// When the empty string is used as a regex, it splits every at every
-    /// valid UTF-8 boundary by default (which includes the beginning and
-    /// end of the haystack):
+    /// When the empty string is used as a regex, it splits at every valid
+    /// UTF-8 boundary by default (which includes the beginning and end of the
+    /// haystack):
     ///
     /// ```
     /// use regex_automata::meta::Regex;
@@ -827,11 +827,10 @@ impl Regex {
     /// use regex_automata::meta::Regex;
     ///
     /// let re = Regex::new(r"\W+").unwrap();
-    /// let hay = "a b \t  c\td    e";
     /// let hay = "Hey! How are you?";
     /// let fields: Vec<&str> =
     ///     re.splitn(hay, 3).map(|span| &hay[span]).collect();
-    /// assert_eq!(fields, vec!("Hey", "How", "are you?"));
+    /// assert_eq!(fields, vec!["Hey", "How", "are you?"]);
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
@@ -2818,6 +2817,12 @@ impl Config {
     /// and a `\n`).
     ///
     /// By default, `\n` is the line terminator.
+    ///
+    /// **Warning**: This does not change the behavior of `.`. To do that,
+    /// you'll need to configure the syntax option
+    /// [`syntax::Config::line_terminator`](crate::util::syntax::Config::line_terminator)
+    /// in addition to this. Otherwise, `.` will continue to match any
+    /// character other than `\n`.
     ///
     /// # Example
     ///

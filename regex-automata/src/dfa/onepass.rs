@@ -2031,10 +2031,7 @@ impl DFA {
         let mut pid = None;
         let mut next_sid = match input.get_anchored() {
             Anchored::Yes => self.start(),
-            Anchored::Pattern(pid) => match self.start_pattern(pid)? {
-                None => return Ok(None),
-                Some(sid) => sid,
-            },
+            Anchored::Pattern(pid) => self.start_pattern(pid)?,
             Anchored::No => {
                 // If the regex is itself always anchored, then we're fine,
                 // even if the search is configured to be unanchored.
@@ -2153,10 +2150,7 @@ impl DFA {
     /// 'starts_for_each_pattern'
     /// was not enabled, then this returns an error. If the given pattern is
     /// not in this DFA, then `Ok(None)` is returned.
-    fn start_pattern(
-        &self,
-        pid: PatternID,
-    ) -> Result<Option<StateID>, MatchError> {
+    fn start_pattern(&self, pid: PatternID) -> Result<StateID, MatchError> {
         if !self.config.get_starts_for_each_pattern() {
             return Err(MatchError::unsupported_anchored(Anchored::Pattern(
                 pid,
@@ -2168,7 +2162,7 @@ impl DFA {
         // patterns at pid+1. Thus, starts.len()-1 corresponds to the total
         // number of patterns that one can explicitly search for. (And it may
         // be zero.)
-        Ok(self.starts.get(pid.one_more()).copied())
+        Ok(self.starts.get(pid.one_more()).copied().unwrap_or(DEAD))
     }
 
     /// Returns the transition from the given state ID and byte of input. The
